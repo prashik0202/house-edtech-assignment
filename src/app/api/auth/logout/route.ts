@@ -1,0 +1,11 @@
+import { NextResponse } from 'next/server'
+
+export async function POST() {
+  try {
+    const res = NextResponse.json({ message: 'Logged out' }, { status : 200 })
+    res.cookies.delete('token')
+    return res
+  } catch (error) {
+    return NextResponse.json({ message: 'Internal Server error' }, { status : 500 })
+  }
+}
