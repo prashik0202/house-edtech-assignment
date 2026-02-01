@@ -7,6 +7,7 @@ import { LogInIcon, LogOutIcon } from 'lucide-react'
 import { toast } from 'sonner';
 import { useRouter } from 'next/navigation';
 import ConfirmationPopup from './confimation-popup';
+import Link from 'next/link';
 
 const Header = () => {
 
@@ -46,7 +47,11 @@ const Header = () => {
             />
           </div>
         ) : (
-          <Button className='hover:cursor-pointer'>Login <LogInIcon /></Button>
+          <Button className='hover:cursor-pointer'>
+            <Link href='/login'>
+              Login <LogInIcon />
+            </Link>
+          </Button>
         )}
       </div>
     </header>
