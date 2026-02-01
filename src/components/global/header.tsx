@@ -47,7 +47,7 @@ const Header = () => {
             />
           </div>
         ) : (
-          <Button className='hover:cursor-pointer'>
+          <Button className='hover:cursor-pointer' asChild>
             <Link href='/login'>
               Login <LogInIcon />
             </Link>
