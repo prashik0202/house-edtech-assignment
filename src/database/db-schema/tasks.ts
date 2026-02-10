@@ -2,12 +2,18 @@ import {
   pgTable,
   uuid,
   varchar,
-  boolean,
   timestamp,
+  pgEnum,
 } from 'drizzle-orm/pg-core'
 import { relations } from 'drizzle-orm'
 
 import { users } from './users'
+
+export const taskStatusEnum = pgEnum('task_status', [
+  'todo',
+  'inprogress',
+  'done',
+])
 
 export const tasks = pgTable('tasks', {
   id: uuid('id').defaultRandom().primaryKey(),
@@ -16,7 +22,7 @@ export const tasks = pgTable('tasks', {
 
   description: varchar('description', { length: 500 }),
 
-  completed: boolean('completed').default(false).notNull(),
+  status: taskStatusEnum('status').default('todo').notNull(),
 
   userId: uuid('user_id')
     .notNull()

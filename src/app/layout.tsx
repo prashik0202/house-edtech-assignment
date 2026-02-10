@@ -41,7 +41,7 @@ export default function RootLayout({
               position="top-right"
               richColors
             />
-            <AuthSync />
+            {/* <AuthSync /> */}
         </ThemeProvider>
       </body>
     </html>

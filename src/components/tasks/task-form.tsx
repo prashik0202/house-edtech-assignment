@@ -12,11 +12,12 @@ import {
 import { Label } from '../ui/label';
 import { Input } from '../ui/input';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { CreateTaskInput, createTaskSchema, Task } from '@/schema/taskSchema';
-import { useForm } from 'react-hook-form';
+import { CreateTaskInput, createTaskSchema, updateTaskSchema, Task } from '@/schema/taskSchema';
+import { Controller, useForm } from 'react-hook-form';
 import { Button } from '../ui/button';
 import { toast } from 'sonner';
 import { useRouter } from 'next/navigation';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../ui/select';
 
 interface TaskFormInterface {
   trigger: React.ReactNode;
@@ -24,23 +25,26 @@ interface TaskFormInterface {
   task?: Task
 }
 
-const TaskForm = ({ trigger, mode, task } : TaskFormInterface) => {
+const TaskForm = ({ trigger, mode, task }: TaskFormInterface) => {
 
   const router = useRouter()
   const [open, setOpen] = useState(false);
 
-  const { register, formState: { isLoading, errors, isDirty }, reset, handleSubmit } = useForm({
-    resolver: zodResolver(createTaskSchema),
+  const schema = mode === 'create' ? createTaskSchema : updateTaskSchema;
+
+  const { register, control, formState: { isLoading, errors, isDirty }, reset, handleSubmit } = useForm({
+    resolver: zodResolver(schema),
     defaultValues: {
-      title: task ? task.title : "",
-      description: task ? task.description : ""
+      title: task?.title || "",
+      description: task?.description || "",
+      status: task ? task.status : "todo"
     }
   });
 
-  const handleCreateTask = async(data: CreateTaskInput) => {
+  const handleCreateTask = async (data: any) => {
     try {
 
-      if(mode === 'create') {
+      if (mode === 'create') {
         const response = await fetch('/api/tasks', {
           method: "POST",
           headers: {
@@ -48,7 +52,7 @@ const TaskForm = ({ trigger, mode, task } : TaskFormInterface) => {
           },
           body: JSON.stringify(data)
         });
-        if(response.ok) {
+        if (response.ok) {
           toast.success("Task Created Successfully");
         }
         return;
@@ -61,11 +65,11 @@ const TaskForm = ({ trigger, mode, task } : TaskFormInterface) => {
         },
         body: JSON.stringify(data)
       });
-      if(response.ok) {
+      if (response.ok) {
         toast.success("Task Updated Successfully");
       }
     } catch (error) {
-      if(mode === 'create') {
+      if (mode === 'create') {
         toast.error("unable to create Task")
       } else {
         toast.error("unable to update Task")
@@ -93,7 +97,7 @@ const TaskForm = ({ trigger, mode, task } : TaskFormInterface) => {
               type="text"
               {...register("title")}
             />
-            {errors.title && ( <span className="text-sm text-destructive">{errors.title?.message}</span>)}
+            {errors.title && (<span className="text-sm text-destructive">{errors.title?.message as string}</span>)}
           </div>
           <div className='flex flex-col gap-1'>
             <Label>Description</Label>
@@ -101,7 +105,26 @@ const TaskForm = ({ trigger, mode, task } : TaskFormInterface) => {
               type="text"
               {...register("description")}
             />
-            {errors.description && ( <span className="text-sm text-destructive">{errors.description?.message}</span>)}
+            {errors.description && (<span className="text-sm text-destructive">{errors.description?.message as string}</span>)}
+          </div>
+          <div className='flex flex-col gap-1'>
+            <Label>Status</Label>
+            <Controller
+              control={control}
+              name="status"
+              render={({ field }) => (
+                <Select onValueChange={field.onChange} defaultValue={field.value}>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select status" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="todo">Todo</SelectItem>
+                    <SelectItem value="inprogress">In Progress</SelectItem>
+                    <SelectItem value="done">Done</SelectItem>
+                  </SelectContent>
+                </Select>
+              )}
+            />
           </div>
           <Button disabled={isLoading || !isDirty}>{mode === 'create' ? 'Create' : 'Update'}</Button>
         </form>

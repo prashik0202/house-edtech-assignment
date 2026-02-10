@@ -1,3 +1,4 @@
+import Kanban from '@/components/kanbanBoard/Kanban'
 import TaskForm from '@/components/tasks/task-form'
 import Viewtasks from '@/components/tasks/view-tasks'
 import { Button } from '@/components/ui/button'
@@ -9,7 +10,7 @@ import { redirect } from 'next/navigation'
 
 export const dynamic = 'force-dynamic'
 
-const TaskPage = async() => {
+const TaskPage = async () => {
 
   const user = await getAuthUser()
 
@@ -18,7 +19,7 @@ const TaskPage = async() => {
   }
 
   const userTasks = await db.select().from(tasks).where(eq(tasks.userId, user.userId));
-  
+
   const formattedTasks = userTasks.map(task => ({
     ...task,
     description: task.description ?? undefined
@@ -27,7 +28,7 @@ const TaskPage = async() => {
   return (
     <div className='p-2 mt-10'>
       <div className='flex flex-col gap-1'>
-        <TaskForm 
+        <TaskForm
           trigger={
             <Button className='w-fit'>Add New Task</Button>
           }
@@ -35,8 +36,9 @@ const TaskPage = async() => {
         />
         <span className='text-sm text-muted-foreground'>you can create your task here by clicking on add new task button</span>
       </div>
-      <div>
-        <Viewtasks tasks={formattedTasks}/>
+      <div className='mt-5'>
+        {/* <Viewtasks tasks={formattedTasks} /> */}
+        <Kanban tasks={formattedTasks} />
       </div>
     </div>
   )

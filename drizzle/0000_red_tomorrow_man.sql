@@ -1,3 +1,4 @@
+CREATE TYPE "public"."task_status" AS ENUM('todo', 'inprogress', 'done');--> statement-breakpoint
 CREATE TABLE "users" (
 	"id" uuid PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
 	"name" varchar(100) NOT NULL,
@@ -11,7 +12,7 @@ CREATE TABLE "tasks" (
 	"id" uuid PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
 	"title" varchar(255) NOT NULL,
 	"description" varchar(500),
-	"completed" boolean DEFAULT false NOT NULL,
+	"status" "task_status" DEFAULT 'todo' NOT NULL,
 	"user_id" uuid NOT NULL,
 	"created_at" timestamp DEFAULT now() NOT NULL
 );

@@ -11,19 +11,19 @@ interface TaskCardProp {
   task: Task
 }
 
-const TaskCard = ({ task } : TaskCardProp) => {
+const TaskCard = ({ task }: TaskCardProp) => {
   return (
     <Card>
       <CardHeader>
         <div className="flex items-center gap-2">
           <TaskToggle
             taskId={task.id}
-            completed={task.completed}
+            status={task.status}
           />
           <CardTitle
             className={[
               'max-w-40 truncate',
-              task.completed && 'line-through text-muted-foreground',
+              task.status === 'done' && 'line-through text-muted-foreground',
             ].filter(Boolean).join(' ')}
             title={task.title}
           >
@@ -37,10 +37,10 @@ const TaskCard = ({ task } : TaskCardProp) => {
         </CardDescription>
         <CardAction>
           <DeleteTaskButton taskId={task.id} />
-          <TaskForm 
+          <TaskForm
             mode='update'
             trigger={
-              <Button variant={"ghost"}><PenBox className='text-sky-400'/></Button>
+              <Button variant={"ghost"}><PenBox className='text-sky-400' /></Button>
             }
             task={task}
           />

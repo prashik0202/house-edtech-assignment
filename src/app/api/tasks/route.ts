@@ -14,7 +14,7 @@ export async function POST(req: Request) {
     redirect('/login')
   }
 
-  const { title, description } = await req.json()
+  const { title, description, status } = await req.json()
 
   if (!title) {
     return NextResponse.json(
@@ -28,11 +28,11 @@ export async function POST(req: Request) {
     .values({
       title,
       description,
+      status,
       userId: user.userId,
-      completed: false
     })
     .returning()
-  
+
   revalidatePath('/tasks')
 
   return NextResponse.json(task, { status: 201 })

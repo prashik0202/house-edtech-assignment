@@ -7,10 +7,10 @@ import { toast } from 'sonner'
 
 interface TaskToggleProps {
   taskId: string
-  completed: boolean
+  status: 'todo' | 'inprogress' | 'done'
 }
 
-const TaskToggle = ({ taskId, completed }: TaskToggleProps) => {
+const TaskToggle = ({ taskId, status }: TaskToggleProps) => {
   const router = useRouter()
   const [loading, setLoading] = useState(false)
 
@@ -18,27 +18,29 @@ const TaskToggle = ({ taskId, completed }: TaskToggleProps) => {
     try {
       setLoading(true)
 
+      const newStatus = checked ? 'done' : 'todo'
+
       const res = await fetch(`/api/tasks/${taskId}`, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ completed: checked }),
+        body: JSON.stringify({ status: newStatus }),
       })
 
       if (res.ok) {
         toast.success("Task Updated!")
       }
 
-      } catch {
-        toast.error('Failed to update task')
-      } finally {
-        setLoading(false)
-        router.refresh()
+    } catch {
+      toast.error('Failed to update task')
+    } finally {
+      setLoading(false)
+      router.refresh()
     }
   }
 
   return (
     <Checkbox
-      checked={completed}
+      checked={status === 'done'}
       disabled={loading}
       onCheckedChange={(checked) => handleToggle(Boolean(checked))}
     />

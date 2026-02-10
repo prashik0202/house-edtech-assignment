@@ -1,5 +1,5 @@
 {
-  "id": "23780f5f-8190-40cf-99c0-9bae7c15ca79",
+  "id": "030e6c0a-9a2a-404d-acce-38db7898c4c4",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "7",
   "dialect": "postgresql",
@@ -80,12 +80,13 @@
           "primaryKey": false,
           "notNull": false
         },
-        "completed": {
-          "name": "completed",
-          "type": "boolean",
+        "status": {
+          "name": "status",
+          "type": "task_status",
+          "typeSchema": "public",
           "primaryKey": false,
           "notNull": true,
-          "default": false
+          "default": "'todo'"
         },
         "user_id": {
           "name": "user_id",
@@ -124,7 +125,17 @@
       "isRLSEnabled": false
     }
   },
-  "enums": {},
+  "enums": {
+    "public.task_status": {
+      "name": "task_status",
+      "schema": "public",
+      "values": [
+        "todo",
+        "inprogress",
+        "done"
+      ]
+    }
+  },
   "schemas": {},
   "sequences": {},
   "roles": {},

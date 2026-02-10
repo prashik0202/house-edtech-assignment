@@ -19,14 +19,14 @@ export async function PATCH(
 
   const { id } = await params
 
-  const { title, description, completed } = await req.json()
+  const { title, description, status } = await req.json()
 
   const [updatedTask] = await db
     .update(tasks)
     .set({
       title,
       description,
-      completed
+      status,
     })
     .where(
       and(

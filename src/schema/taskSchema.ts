@@ -11,17 +11,25 @@ export const taskBaseSchema = z.object({
     .max(500, 'Description must be under 500 characters')
     .optional(),
 
-  completed: z.boolean().optional(),
+  status: z.enum(['todo', 'inprogress', 'done']).optional(),
 })
 
 export const createTaskSchema = taskBaseSchema.pick({
   title: true,
   description: true,
+}).extend({
+  status: z.enum(['todo', 'inprogress', 'done']).default('todo'),
 })
 
+export const updateTaskSchema = taskBaseSchema.partial()
+
 export type CreateTaskInput = z.infer<typeof createTaskSchema>
-export type UpdateTaskInput = z.infer<typeof createTaskSchema>
-export type Task = CreateTaskInput & {
-  id: string,
-  completed: boolean
+export type UpdateTaskInput = z.infer<typeof taskBaseSchema>
+export type Task = {
+  id: string
+  title: string
+  description?: string | null
+  status: 'todo' | 'inprogress' | 'done'
+  userId: string
+  createdAt: Date
 }
